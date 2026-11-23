@@ -1,0 +1,50 @@
+// -----------------------------------------------------------------------------
+// SYSTEM ADMINISTRATION & CONTENT
+// -----------------------------------------------------------------------------
+
+model Banner {
+  id        String         @id @default(uuid()) @db.Uuid
+  title     String
+  subtitle  String?
+  imageUrl  String
+  targetUrl String?
+  position  BannerPosition @default(HOME_HERO)
+  sortOrder Int            @default(0)
+  startsAt  DateTime?      @db.Timestamptz(6)
+  endsAt    DateTime?      @db.Timestamptz(6)
+  isActive  Boolean        @default(true)
+  createdAt DateTime       @default(now()) @db.Timestamptz(6)
+  updatedAt DateTime       @updatedAt @db.Timestamptz(6)
+
+  @@index([position, isActive, sortOrder])
+  @@map("banners")
+}
+
+model SiteSetting {
+  id          String   @id @default(uuid()) @db.Uuid
+  key         String   @unique @db.VarChar(120)
+  value       Json
+  description String?
+  updatedAt   DateTime @updatedAt @db.Timestamptz(6)
+
+  @@map("site_settings")
+}
+
+model AuditLog {
+  id         String   @id @default(uuid()) @db.Uuid
+  actorId    String?  @db.Uuid
+  action     String   @db.VarChar(120)
+  entityType String   @db.VarChar(100)
+  entityId   String?  @db.Uuid
+  ipAddress  String?  @db.VarChar(64)
+  userAgent  String?
+  metadata   Json?
+  createdAt  DateTime @default(now()) @db.Timestamptz(6)
+
+  actor User? @relation("AuditActor", fields: [actorId], references: [id], onDelete: SetNull)
+
+  @@index([actorId, createdAt])
+  @@index([entityType, entityId, createdAt])
+  @@index([action, createdAt])
+  @@map("audit_logs")
+}

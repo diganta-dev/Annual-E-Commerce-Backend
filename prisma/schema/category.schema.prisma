@@ -1,0 +1,24 @@
+// -----------------------------------------------------------------------------
+// CATEGORIES
+// -----------------------------------------------------------------------------
+
+model Category {
+  id          String   @id @default(uuid()) @db.Uuid
+  parentId    String?  @db.Uuid
+  name        String   @db.VarChar(120)
+  slug        String   @unique @db.VarChar(160)
+  description String?
+  imageUrl    String?
+  isActive    Boolean  @default(true)
+  sortOrder   Int      @default(0)
+  createdAt   DateTime @default(now()) @db.Timestamptz(6)
+  updatedAt   DateTime @updatedAt @db.Timestamptz(6)
+
+  parent   Category?         @relation("CategoryTree", fields: [parentId], references: [id], onDelete: SetNull)
+  children Category[]        @relation("CategoryTree")
+  products ProductCategory[]
+
+  @@index([parentId, sortOrder])
+  @@index([isActive, sortOrder])
+  @@map("categories")
+}

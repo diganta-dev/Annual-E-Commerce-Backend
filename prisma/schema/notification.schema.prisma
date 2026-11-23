@@ -1,0 +1,40 @@
+// -----------------------------------------------------------------------------
+// NOTIFICATIONS & EMAILS
+// -----------------------------------------------------------------------------
+
+model Notification {
+  id        String              @id @default(uuid()) @db.Uuid
+  userId    String              @db.Uuid
+  type      NotificationType
+  channel   NotificationChannel @default(IN_APP)
+  status    NotificationStatus  @default(PENDING)
+  title     String
+  message   String
+  data      Json?
+  readAt    DateTime?           @db.Timestamptz(6)
+  sentAt    DateTime?           @db.Timestamptz(6)
+  createdAt DateTime            @default(now()) @db.Timestamptz(6)
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, status, createdAt])
+  @@index([status, createdAt])
+  @@map("notifications")
+}
+
+model EmailLog {
+  id           String    @id @default(uuid()) @db.Uuid
+  recipient    String    @db.VarChar(320)
+  subject      String
+  template     String?   @db.VarChar(120)
+  provider     String?   @db.VarChar(80)
+  providerId   String?   @db.VarChar(180)
+  status       String    @default("PENDING") @db.VarChar(30)
+  errorMessage String?
+  sentAt       DateTime? @db.Timestamptz(6)
+  createdAt    DateTime  @default(now()) @db.Timestamptz(6)
+
+  @@index([recipient, createdAt])
+  @@index([status, createdAt])
+  @@map("email_logs")
+}

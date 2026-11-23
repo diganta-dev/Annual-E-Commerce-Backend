@@ -1,0 +1,73 @@
+// -----------------------------------------------------------------------------
+// ORDERS
+// -----------------------------------------------------------------------------
+
+model Order {
+  id              String        @id @default(uuid()) @db.Uuid
+  orderNumber     String        @unique @db.VarChar(40)
+  userId          String?       @db.Uuid
+  status          OrderStatus   @default(PENDING)
+  paymentStatus   PaymentStatus @default(PENDING)
+  currency        String        @default("BDT") @db.Char(3)
+  customerName    String
+  customerEmail   String?       @db.VarChar(320)
+  customerPhone   String        @db.VarChar(32)
+  shippingAddress Json
+  billingAddress  Json?
+  subtotalAmount  Decimal       @db.Decimal(12, 2)
+  discountAmount  Decimal       @default(0) @db.Decimal(12, 2)
+  shippingAmount  Decimal       @default(0) @db.Decimal(12, 2)
+  taxAmount       Decimal       @default(0) @db.Decimal(12, 2)
+  totalAmount     Decimal       @db.Decimal(12, 2)
+  customerNote    String?
+  adminNote       String?
+  placedAt        DateTime?     @db.Timestamptz(6)
+  confirmedAt     DateTime?     @db.Timestamptz(6)
+  cancelledAt     DateTime?     @db.Timestamptz(6)
+  deliveredAt     DateTime?     @db.Timestamptz(6)
+  createdAt       DateTime      @default(now()) @db.Timestamptz(6)
+  updatedAt       DateTime      @updatedAt @db.Timestamptz(6)
+
+  user         User?              @relation(fields: [userId], references: [id], onDelete: SetNull)
+  items        OrderItem[]
+  payments     Payment[]
+  shipments    Shipment[]
+  couponUsages CouponUsage[]
+  reservations StockReservation[]
+  returns      ReturnRequest[]
+
+  @@index([userId, createdAt])
+  @@index([status, createdAt])
+  @@index([paymentStatus, createdAt])
+  @@index([createdAt])
+  @@map("orders")
+}
+
+model OrderItem {
+  id             String   @id @default(uuid()) @db.Uuid
+  orderId        String   @db.Uuid
+  productId      String?  @db.Uuid
+  variantId      String?  @db.Uuid
+  productName    String
+  variantName    String?
+  sku            String   @db.VarChar(100)
+  imageUrl       String?
+  unitPrice      Decimal  @db.Decimal(12, 2)
+  quantity       Int
+  subtotalAmount Decimal  @db.Decimal(12, 2)
+  discountAmount Decimal  @default(0) @db.Decimal(12, 2)
+  taxAmount      Decimal  @default(0) @db.Decimal(12, 2)
+  totalAmount    Decimal  @db.Decimal(12, 2)
+  createdAt      DateTime @default(now()) @db.Timestamptz(6)
+
+  order       Order           @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  product     Product?        @relation(fields: [productId], references: [id], onDelete: SetNull)
+  variant     ProductVariant? @relation(fields: [variantId], references: [id], onDelete: SetNull)
+  returnItems ReturnItem[]
+  review      Review?
+
+  @@index([orderId])
+  @@index([productId])
+  @@index([variantId])
+  @@map("order_items")
+}

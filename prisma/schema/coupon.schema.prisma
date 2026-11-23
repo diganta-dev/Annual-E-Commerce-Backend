@@ -1,0 +1,43 @@
+// -----------------------------------------------------------------------------
+// COUPONS & DISCOUNTS
+// -----------------------------------------------------------------------------
+
+model Coupon {
+  id                 String       @id @default(uuid()) @db.Uuid
+  code               String       @unique @db.VarChar(60)
+  description        String?
+  discountType       DiscountType
+  discountValue      Decimal      @db.Decimal(12, 2)
+  maximumDiscount    Decimal?     @db.Decimal(12, 2)
+  minimumOrderAmount Decimal      @default(0) @db.Decimal(12, 2)
+  usageLimit         Int?
+  perUserLimit       Int?
+  startsAt           DateTime?    @db.Timestamptz(6)
+  expiresAt          DateTime?    @db.Timestamptz(6)
+  isActive           Boolean      @default(true)
+  createdAt          DateTime     @default(now()) @db.Timestamptz(6)
+  updatedAt          DateTime     @updatedAt @db.Timestamptz(6)
+
+  usages CouponUsage[]
+
+  @@index([isActive, startsAt, expiresAt])
+  @@map("coupons")
+}
+
+model CouponUsage {
+  id       String   @id @default(uuid()) @db.Uuid
+  couponId String   @db.Uuid
+  orderId  String   @db.Uuid
+  userId   String?  @db.Uuid
+  discount Decimal  @db.Decimal(12, 2)
+  usedAt   DateTime @default(now()) @db.Timestamptz(6)
+
+  coupon Coupon @relation(fields: [couponId], references: [id], onDelete: Restrict)
+  order  Order  @relation(fields: [orderId], references: [id], onDelete: Restrict)
+  user   User?  @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  @@unique([couponId, orderId])
+  @@index([couponId, userId])
+  @@index([userId, usedAt])
+  @@map("coupon_usages")
+}

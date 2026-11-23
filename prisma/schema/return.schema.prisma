@@ -1,0 +1,44 @@
+// -----------------------------------------------------------------------------
+// RETURNS
+// -----------------------------------------------------------------------------
+
+model ReturnRequest {
+  id           String       @id @default(uuid()) @db.Uuid
+  orderId      String       @db.Uuid
+  userId       String       @db.Uuid
+  returnNumber String       @unique @db.VarChar(40)
+  status       ReturnStatus @default(REQUESTED)
+  reason       String
+  customerNote String?
+  adminNote    String?
+  requestedAt  DateTime     @default(now()) @db.Timestamptz(6)
+  resolvedAt   DateTime?    @db.Timestamptz(6)
+  createdAt    DateTime     @default(now()) @db.Timestamptz(6)
+  updatedAt    DateTime     @updatedAt @db.Timestamptz(6)
+
+  order Order        @relation(fields: [orderId], references: [id], onDelete: Restrict)
+  user  User         @relation(fields: [userId], references: [id], onDelete: Restrict)
+  items ReturnItem[]
+
+  @@index([userId, createdAt])
+  @@index([orderId, createdAt])
+  @@index([status, createdAt])
+  @@map("return_requests")
+}
+
+model ReturnItem {
+  id              String  @id @default(uuid()) @db.Uuid
+  returnRequestId String  @db.Uuid
+  orderItemId     String  @db.Uuid
+  variantId       String? @db.Uuid
+  quantity        Int
+  conditionNote   String?
+  refundAmount    Decimal @default(0) @db.Decimal(12, 2)
+
+  returnRequest ReturnRequest   @relation(fields: [returnRequestId], references: [id], onDelete: Cascade)
+  orderItem     OrderItem       @relation(fields: [orderItemId], references: [id], onDelete: Restrict)
+  variant       ProductVariant? @relation(fields: [variantId], references: [id], onDelete: SetNull)
+
+  @@unique([returnRequestId, orderItemId])
+  @@map("return_items")
+}

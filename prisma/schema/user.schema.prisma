@@ -1,0 +1,81 @@
+// -----------------------------------------------------------------------------
+// USER & PROFILE
+// -----------------------------------------------------------------------------
+
+model User {
+  id              String     @id @default(uuid()) @db.Uuid
+  name            String
+  email           String     @unique @db.VarChar(320)
+  phone           String?    @unique @db.VarChar(32)
+  passwordHash    String?
+  status          UserStatus @default(PENDING_VERIFICATION)
+  emailVerifiedAt DateTime?  @db.Timestamptz(6)
+  phoneVerifiedAt DateTime?  @db.Timestamptz(6)
+  lastLoginAt     DateTime?  @db.Timestamptz(6)
+  deletedAt       DateTime?  @db.Timestamptz(6)
+  createdAt       DateTime   @default(now()) @db.Timestamptz(6)
+  updatedAt       DateTime   @updatedAt @db.Timestamptz(6)
+
+  profile         UserProfile?
+  roles           UserRole[]
+  addresses       Address[]
+  sessions        Session[]
+  accounts        OAuthAccount[]
+  authTokens      AuthToken[]
+  carts           Cart[]
+  wishlists       Wishlist[]
+  orders          Order[]
+  reviews         Review[]
+  couponUsages    CouponUsage[]
+  notifications   Notification[]
+  supportTickets  SupportTicket[]  @relation("TicketCustomer")
+  assignedTickets SupportTicket[]  @relation("TicketAssignee")
+  supportMessages SupportMessage[]
+  stockMovements  StockMovement[]  @relation("StockMovementActor")
+  auditLogs       AuditLog[]       @relation("AuditActor")
+  returns         ReturnRequest[]
+
+  @@index([status, createdAt])
+  @@index([deletedAt])
+  @@map("users")
+}
+
+model UserProfile {
+  id              String    @id @default(uuid()) @db.Uuid
+  userId          String    @unique @db.Uuid
+  avatarUrl       String?
+  dateOfBirth     DateTime? @db.Date
+  gender          String?   @db.VarChar(32)
+  preferredLocale String?   @db.VarChar(16)
+  marketingOptIn  Boolean   @default(false)
+  createdAt       DateTime  @default(now()) @db.Timestamptz(6)
+  updatedAt       DateTime  @updatedAt @db.Timestamptz(6)
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("user_profiles")
+}
+
+model Address {
+  id            String   @id @default(uuid()) @db.Uuid
+  userId        String   @db.Uuid
+  label         String?  @db.VarChar(50)
+  recipientName String
+  phone         String   @db.VarChar(32)
+  addressLine1  String
+  addressLine2  String?
+  area          String?
+  city          String
+  district      String?
+  division      String?
+  postalCode    String?  @db.VarChar(20)
+  country       String   @default("Bangladesh") @db.VarChar(80)
+  isDefault     Boolean  @default(false)
+  createdAt     DateTime @default(now()) @db.Timestamptz(6)
+  updatedAt     DateTime @updatedAt @db.Timestamptz(6)
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, isDefault])
+  @@map("addresses")
+}

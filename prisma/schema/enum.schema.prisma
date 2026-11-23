@@ -1,0 +1,198 @@
+// -----------------------------------------------------------------------------
+// ENUMS
+// -----------------------------------------------------------------------------
+
+enum UserStatus {
+  ACTIVE
+  INACTIVE
+  SUSPENDED
+  PENDING_VERIFICATION
+}
+
+enum AuthTokenPurpose {
+  EMAIL_VERIFICATION
+  PASSWORD_RESET
+  MAGIC_LOGIN
+}
+
+enum CartStatus {
+  ACTIVE
+  CONVERTED
+  ABANDONED
+  EXPIRED
+}
+
+enum ProductStatus {
+  DRAFT
+  ACTIVE
+  ARCHIVED
+}
+
+enum InventoryMovementType {
+  STOCK_IN
+  STOCK_OUT
+  RESERVATION
+  RELEASE_RESERVATION
+  SALE
+  RETURN
+  DAMAGE
+  ADJUSTMENT
+  TRANSFER_IN
+  TRANSFER_OUT
+}
+
+enum ReservationStatus {
+  RESERVED
+  CONFIRMED
+  RELEASED
+  EXPIRED
+}
+
+enum OrderStatus {
+  PENDING
+  CONFIRMED
+  PROCESSING
+  PACKED
+  SHIPPED
+  DELIVERED
+  CANCELLED
+  RETURN_REQUESTED
+  PARTIALLY_RETURNED
+  RETURNED
+}
+
+enum PaymentStatus {
+  PENDING
+  REQUIRES_ACTION
+  AUTHORIZED
+  PAID
+  FAILED
+  CANCELLED
+  PARTIALLY_REFUNDED
+  REFUNDED
+}
+
+enum PaymentProvider {
+  SSLCOMMERZ
+  BKASH
+  NAGAD
+  ROCKET
+  STRIPE
+  PAYPAL
+  BANK_TRANSFER
+  MANUAL
+}
+
+enum PaymentMethod {
+  CARD
+  MOBILE_BANKING
+  INTERNET_BANKING
+  BANK_TRANSFER
+  CASH_ON_DELIVERY
+  WALLET
+  OTHER
+}
+
+enum PaymentTransactionType {
+  INITIATED
+  AUTHORIZED
+  CAPTURED
+  PAYMENT_FAILED
+  VOIDED
+  REFUND_INITIATED
+  REFUND_COMPLETED
+  REFUND_FAILED
+}
+
+enum RefundStatus {
+  PENDING
+  PROCESSING
+  SUCCEEDED
+  FAILED
+  CANCELLED
+}
+
+enum DiscountType {
+  PERCENTAGE
+  FIXED_AMOUNT
+}
+
+enum ShipmentStatus {
+  PENDING
+  READY_TO_SHIP
+  IN_TRANSIT
+  OUT_FOR_DELIVERY
+  DELIVERED
+  FAILED
+  RETURNED_TO_SENDER
+  CANCELLED
+}
+
+enum ReviewStatus {
+  PENDING
+  APPROVED
+  REJECTED
+  HIDDEN
+}
+
+enum ReturnStatus {
+  REQUESTED
+  APPROVED
+  REJECTED
+  PICKUP_SCHEDULED
+  RECEIVED
+  REFUND_PENDING
+  COMPLETED
+  CANCELLED
+}
+
+enum SupportTicketStatus {
+  OPEN
+  IN_PROGRESS
+  WAITING_FOR_CUSTOMER
+  RESOLVED
+  CLOSED
+}
+
+enum SupportPriority {
+  LOW
+  NORMAL
+  HIGH
+  URGENT
+}
+
+enum SupportSenderType {
+  CUSTOMER
+  STAFF
+  SYSTEM
+}
+
+enum NotificationType {
+  ORDER_UPDATE
+  PAYMENT_UPDATE
+  SHIPMENT_UPDATE
+  PROMOTION
+  ACCOUNT_SECURITY
+  GENERAL
+}
+
+enum NotificationChannel {
+  IN_APP
+  EMAIL
+  SMS
+  PUSH
+}
+
+enum NotificationStatus {
+  PENDING
+  SENT
+  FAILED
+  READ
+}
+
+enum BannerPosition {
+  HOME_HERO
+  HOME_MIDDLE
+  CATEGORY
+  PROMOTION
+}
